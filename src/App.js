@@ -6,6 +6,8 @@ import Navbar from "./Components/Navbar";
 import Create from "./screen/Create";
 import EditPage from "./screen/EditPage";
 import Home from "./screen/Home";
+import Login from "./screen/Login";
+import Signup from "./screen/Signup";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
             <Route path="/:id" element={<EditPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </Container>
       </BrowserRouter>

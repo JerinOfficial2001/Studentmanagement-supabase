@@ -1,7 +1,8 @@
 import {
   Button,
   FormControl,
-  Rating,
+  Link,
+  Stack,
   styled,
   TextField,
   Typography,
@@ -31,44 +32,54 @@ export const Styledbutton = styled(Button)({
   margin: "20px 40%",
   background: "#3cb371",
 });
-function Create() {
+const Styledstack = styled(Stack)({
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 5,
+});
+function Login() {
   const navigate = useNavigate();
   const [formError, setFormError] = useState(null);
   const [inputData, setInputData] = useState({
-    name: "",
-    comments: "",
-    cgpa: 0,
+    email: "",
+    password: "",
   });
-  const { name, comments, cgpa } = inputData;
+  const { email, password } = inputData;
   const submitHandler = async () => {
-    if (!name || !comments || !cgpa) {
+    if (!email || !password) {
       setFormError("All fields are manditory");
       return;
     } else {
       setFormError(null);
       setInputData({
-        name: "",
-        comments: "",
-        cgpa: 2,
+        email: "",
+        password: "",
       });
     }
     // const { name, comments, cgpa } = data;
 
-    const { error } = await supabase
-      .from("Students")
-      .insert({ name, comments, cgpa });
-    if (error) {
-      console.log(error);
-      setFormError("All fields are manditory");
-    } else {
-      setFormError(null);
-      navigate("/");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        console.log(data);
+        formError("something went wrong");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      alert(error);
     }
-    console.log(name, comments, cgpa);
+
+    console.log(email, password);
   };
   return (
     <Styledbox component="form">
-      <Styledformcontrol sx={{ minWidth: 275 }}>
+      <Styledformcontrol sx={{ minWidth: 400 }}>
         <Styledtextfield
           color="secondary"
           InputLabelProps={{
@@ -76,38 +87,30 @@ function Create() {
               color: "a0a0a0",
             },
           }}
-          id="name"
-          label="Name"
+          id="email"
+          type="email"
+          label="Email"
           variant="outlined"
-          value={name}
+          value={email}
           onChange={(e) => {
-            setInputData({ ...inputData, name: e.target.value });
+            setInputData({ ...inputData, email: e.target.value });
           }}
         />
         <Styledtextfield
           color="secondary"
-          multiline={true}
-          rows={3}
           InputLabelProps={{
             sx: {
               color: "a0a0a0",
             },
           }}
-          id="comments"
-          label="Comments"
+          id="password"
+          label="Password"
+          type="password"
           variant="outlined"
-          value={comments}
+          value={password}
           onChange={(e) => {
-            setInputData({ ...inputData, comments: e.target.value });
+            setInputData({ ...inputData, password: e.target.value });
           }}
-        />
-        <Rating
-          name="simple-controlled"
-          value={parseInt(cgpa)}
-          onChange={(e) => {
-            setInputData({ ...inputData, cgpa: e.target.value });
-          }}
-          sx={{ color: "#3cb371", margin: "10px 30px" }}
         />
         {formError && (
           <Typography
@@ -126,11 +129,24 @@ function Create() {
             e.preventDefault();
           }}
         >
-          Submit
+          Login
         </Styledbutton>
+        <Styledstack>
+          <Typography>Don't have an account?</Typography>
+          <Link
+            href="#"
+            underline="hover"
+            color="blue"
+            onClick={() => {
+              navigate("/signup");
+            }}
+          >
+            {"Sign Up"}
+          </Link>
+        </Styledstack>
       </Styledformcontrol>
     </Styledbox>
   );
 }
 
-export default Create;
+export default Login;

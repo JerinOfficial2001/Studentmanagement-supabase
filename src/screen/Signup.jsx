@@ -1,7 +1,8 @@
 import {
   Button,
   FormControl,
-  Rating,
+  Link,
+  Stack,
   styled,
   TextField,
   Typography,
@@ -28,47 +29,59 @@ export const Styledtextfield = styled(TextField)({
   margin: "20px 20px",
 });
 export const Styledbutton = styled(Button)({
-  margin: "20px 40%",
+  margin: "20px 26%",
   background: "#3cb371",
+  width: 200,
 });
-function Create() {
+const Styledstack = styled(Stack)({
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 5,
+});
+function Signup() {
   const navigate = useNavigate();
   const [formError, setFormError] = useState(null);
   const [inputData, setInputData] = useState({
     name: "",
-    comments: "",
-    cgpa: 0,
+    email: "",
+    password: "",
   });
-  const { name, comments, cgpa } = inputData;
+  const { name, email, password } = inputData;
   const submitHandler = async () => {
-    if (!name || !comments || !cgpa) {
+    if (!name || !email || !password) {
       setFormError("All fields are manditory");
       return;
     } else {
       setFormError(null);
       setInputData({
         name: "",
-        comments: "",
-        cgpa: 2,
+        email: "",
+        password: "",
       });
     }
     // const { name, comments, cgpa } = data;
 
-    const { error } = await supabase
-      .from("Students")
-      .insert({ name, comments, cgpa });
-    if (error) {
-      console.log(error);
-      setFormError("All fields are manditory");
-    } else {
-      setFormError(null);
-      navigate("/");
+    try {
+      await supabase.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
+      });
+      alert("check your email for verification");
+    } catch (error) {
+      alert(error);
     }
-    console.log(name, comments, cgpa);
+
+    console.log(name, email, password);
   };
   return (
     <Styledbox component="form">
-      <Styledformcontrol sx={{ minWidth: 275 }}>
+      <Styledformcontrol sx={{ minWidth: 400 }}>
         <Styledtextfield
           color="secondary"
           InputLabelProps={{
@@ -77,6 +90,7 @@ function Create() {
             },
           }}
           id="name"
+          type="name"
           label="Name"
           variant="outlined"
           value={name}
@@ -86,28 +100,35 @@ function Create() {
         />
         <Styledtextfield
           color="secondary"
-          multiline={true}
-          rows={3}
           InputLabelProps={{
             sx: {
               color: "a0a0a0",
             },
           }}
-          id="comments"
-          label="Comments"
+          id="email"
+          type="email"
+          label="Email"
           variant="outlined"
-          value={comments}
+          value={email}
           onChange={(e) => {
-            setInputData({ ...inputData, comments: e.target.value });
+            setInputData({ ...inputData, email: e.target.value });
           }}
         />
-        <Rating
-          name="simple-controlled"
-          value={parseInt(cgpa)}
-          onChange={(e) => {
-            setInputData({ ...inputData, cgpa: e.target.value });
+        <Styledtextfield
+          color="secondary"
+          InputLabelProps={{
+            sx: {
+              color: "a0a0a0",
+            },
           }}
-          sx={{ color: "#3cb371", margin: "10px 30px" }}
+          id="password"
+          label="Password"
+          type="password"
+          variant="outlined"
+          value={password}
+          onChange={(e) => {
+            setInputData({ ...inputData, password: e.target.value });
+          }}
         />
         {formError && (
           <Typography
@@ -126,11 +147,24 @@ function Create() {
             e.preventDefault();
           }}
         >
-          Submit
+          Create Account
         </Styledbutton>
+        <Styledstack>
+          <Typography>Already have an account?</Typography>
+          <Link
+            href="#"
+            underline="hover"
+            color="blue"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
+            {"Log in"}
+          </Link>
+        </Styledstack>
       </Styledformcontrol>
     </Styledbox>
   );
 }
 
-export default Create;
+export default Signup;
