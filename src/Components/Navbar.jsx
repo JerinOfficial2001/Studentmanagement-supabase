@@ -24,7 +24,7 @@ function Navbar() {
             height="60"
             width="80"
           />
-          <Typography variant="h8">(Student Management)</Typography>
+          <Typography fontSize='small'>(Student Management)</Typography>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Styledlink to="/">

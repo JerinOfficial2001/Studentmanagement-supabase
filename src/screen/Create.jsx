@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  Grid,
   Rating,
   styled,
   TextField,
@@ -68,7 +69,7 @@ function Create() {
   };
   return (
     <Styledbox component="form">
-      <Styledformcontrol>
+      <Styledformcontrol sx={{ minWidth: 275 }}>
         <Styledtextfield
           color="secondary"
           InputLabelProps={{
@@ -109,7 +110,16 @@ function Create() {
           }}
           sx={{ color: "#3cb371", margin: "10px 30px" }}
         />
-        {formError && <Typography>Error</Typography>}
+        {formError && (
+          <Typography
+            color="red"
+            fontSize="small"
+            display="flex"
+            justifyContent="center"
+          >
+            All fields are manditory
+          </Typography>
+        )}
         <Styledbutton
           variant="container"
           onClick={(e) => {
